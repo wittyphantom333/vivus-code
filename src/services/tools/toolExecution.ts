@@ -102,6 +102,7 @@ import {
   formatError,
   formatZodValidationError,
 } from '../../utils/toolErrors'
+import { coerceToolInput } from '../../utils/toolInputCoercion'
 import {
   checkRepetition,
   clearRepetitionOnSuccess,
@@ -674,8 +675,21 @@ async function checkPermissionsAndCallTool(
     progress: ToolProgress<ToolProgressData> | ProgressMessage<HookProgress>,
   ) => void,
 ): Promise<MessageUpdateLazy[]> {
-  // Validate input types with zod (surprisingly, the model is not great at generating valid input)
-  const parsedInput = tool.inputSchema.safeParse(input)
+  // Validate input types with zod (surprisingly, the model is not great at generating valid input).
+  // First-pass coercion fixes common shapes emitted by non-Anthropic models
+  // routed through a proxy (JSON-encoded strings, numeric-keyed objects masquerading
+  // as arrays, "true"/"false" strings) before schema validation rejects them.
+  const coercedInput = coerceToolInput(input)
+  let parsedInput = tool.inputSchema.safeParse(coercedInput)
+  if (!parsedInput.success && coercedInput !== input) {
+    // Coercion produced something the schema still rejects — re-try with the
+    // original input so the error path reports the model's actual mistake
+    // rather than something coercion accidentally mangled.
+    const original = tool.inputSchema.safeParse(input)
+    if (original.success) {
+      parsedInput = original
+    }
+  }
   if (!parsedInput.success) {
     let errorContent = formatZodValidationError(tool.name, parsedInput.error)
 

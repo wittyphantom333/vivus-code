@@ -37,7 +37,13 @@ export function FallbackToolUseErrorMessage(t0) {
       const withoutErrorTags = withoutSandboxViolations.replace(/<\/?error>/g, "");
       const trimmed = withoutErrorTags.trim();
       if (!verbose && trimmed.includes("InputValidationError: ")) {
-        error = "Invalid tool parameters";
+        // Show the actual validation message so the user can see *what* was
+        // invalid (which tool, which parameter, what type was expected vs
+        // received). The old "Invalid tool parameters" reduction hid the one
+        // bit of info that's actually useful for debugging proxy/model
+        // tool-calling failures.
+        const stripped = trimmed.replace(/^InputValidationError:\s*/, "");
+        error = `Invalid tool parameters: ${stripped}`;
       } else {
         if (trimmed.startsWith("Error: ") || trimmed.startsWith("Cancelled: ")) {
           error = trimmed;
