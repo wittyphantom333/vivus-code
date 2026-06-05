@@ -1,0 +1,33 @@
+# Defense-in-depth: the package.json `files` field is the actual whitelist
+# (dist/main.js, README.md, LICENSE). This .npmignore guarantees nothing
+# sensitive can leak even if someone widens `files` by accident.
+
+# Source / build tooling (everything users need is in dist/main.js)
+src/
+build.ts
+tsconfig.json
+deploy-cli.sh
+package.sh
+bun.lockb
+
+# Backend / infra (never publish — contains deploy scripts, server config)
+proxy/
+assets/
+
+# Built artifacts other than dist/main.js
+*.tar.gz
+*.tgz
+dist/*.map
+
+# Local / dev artifacts
+.git/
+.gitignore
+.DS_Store
+node_modules/
+.vivus/
+.vscode/
+*.log
+
+# CI / config
+.github/
+.npmrc

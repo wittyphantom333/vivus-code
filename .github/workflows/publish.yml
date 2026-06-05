@@ -1,0 +1,98 @@
+name: Publish to npm
+
+# Publishes vivus-agent to npm on git tag push.
+#
+# Prereqs (one-time setup in the repo settings):
+#   1. Create a granular npm access token scoped to package `vivus-agent`
+#      (Automation type). Add it to GitHub repo secrets as NPM_TOKEN.
+#   2. Enable npm 2FA on the publisher account at the "auth-and-writes"
+#      level. The granular Automation token bypasses 2FA for CI; humans
+#      still need it for the dashboard.
+#   3. In repo Settings > Actions > General, allow this workflow to use
+#      `id-token: write` (it requests it below for provenance).
+#
+# Usage:
+#   git tag v1.0.2
+#   git push origin v1.0.2
+# That single tag push triggers the workflow, which:
+#   - verifies the tag matches package.json's version
+#   - rebuilds the bundle from source
+#   - runs `npm pack --dry-run` and fails if anything outside the `files`
+#     whitelist would have been included
+#   - publishes with `--provenance`, cryptographically tying the published
+#     tarball to this exact commit and workflow run.
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write   # required for npm provenance
+
+    steps:
+      - name: Checkout (with full history so build can read the SHA)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Verify tag matches package.json version
+        run: |
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          PKG_VERSION="$(node -p "require('./package.json').version")"
+          if [ "$TAG_VERSION" != "$PKG_VERSION" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match package.json version $PKG_VERSION"
+            exit 1
+          fi
+          echo "Publishing vivus-agent@$PKG_VERSION"
+
+      - name: Install build deps
+        run: bun install --frozen-lockfile
+
+      - name: Build self-contained bundle
+        run: bun run build.ts
+
+      - name: Verify bundle is runnable without node_modules
+        run: |
+          mkdir -p /tmp/vivus-pack-test
+          cp dist/main.js /tmp/vivus-pack-test/
+          echo '{"type":"module"}' > /tmp/vivus-pack-test/package.json
+          ( cd /tmp/vivus-pack-test && node main.js --version )
+
+      - name: Audit (informational; does not block on transitive vulns)
+        run: bun audit --prod || true
+
+      - name: Verify publish surface
+        run: |
+          npm pack --dry-run 2>&1 | tee pack.log
+          # Fail if anything other than the whitelisted files leaks in.
+          # Allowed: dist/main.js, README.md, LICENSE, package.json
+          UNEXPECTED=$(grep -E "^npm notice [0-9.]+(kB|MB|B) " pack.log \
+            | awk '{print $NF}' \
+            | grep -vE "^(dist/main\.js|README\.md|LICENSE|package\.json)$" || true)
+          if [ -n "$UNEXPECTED" ]; then
+            echo "::error::Unexpected files in publish surface:"
+            echo "$UNEXPECTED"
+            exit 1
+          fi
+
+      - name: Publish to npm with provenance
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

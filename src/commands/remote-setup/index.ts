@@ -1,0 +1,20 @@
+import type { Command } from '../../commands'
+import { getFeatureValue_CACHED_MAY_BE_STALE } from '../../services/analytics/growthbook'
+import { isPolicyAllowed } from '../../services/policyLimits/index'
+
+const web = {
+  type: 'local-jsx',
+  name: 'web-setup',
+  description:
+    'Setup Vivus on the web (requires connecting your GitHub account)',
+  availability: ['vivus-ai'],
+  isEnabled: () =>
+    getFeatureValue_CACHED_MAY_BE_STALE('tengu_cobalt_lantern', false) &&
+    isPolicyAllowed('allow_remote_sessions'),
+  get isHidden() {
+    return !isPolicyAllowed('allow_remote_sessions')
+  },
+  load: () => import('./remote-setup'),
+} satisfies Command
+
+export default web

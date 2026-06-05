@@ -1,0 +1,20 @@
+node_modules
+.DS_Store
+
+# Build artifacts (built fresh in CI; see .github/workflows/publish.yml)
+dist/
+*.tar.gz
+*.tgz
+
+# Local CLI state
+.vivus/
+.vscode/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment overrides
+.env
+.env.local
+.npmrc

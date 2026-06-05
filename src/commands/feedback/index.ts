@@ -1,0 +1,26 @@
+import type { Command } from '../../commands'
+import { isPolicyAllowed } from '../../services/policyLimits/index'
+import { isEnvTruthy } from '../../utils/envUtils'
+import { isEssentialTrafficOnly } from '../../utils/privacyLevel'
+
+const feedback = {
+  aliases: ['bug'],
+  type: 'local-jsx',
+  name: 'feedback',
+  description: `Submit feedback about Vivus`,
+  argumentHint: '[report]',
+  isEnabled: () =>
+    !(
+      isEnvTruthy(process.env.VIVUS_CODE_USE_BEDROCK) ||
+      isEnvTruthy(process.env.VIVUS_CODE_USE_VERTEX) ||
+      isEnvTruthy(process.env.VIVUS_CODE_USE_FOUNDRY) ||
+      isEnvTruthy(process.env.DISABLE_FEEDBACK_COMMAND) ||
+      isEnvTruthy(process.env.DISABLE_BUG_COMMAND) ||
+      isEssentialTrafficOnly() ||
+      process.env.USER_TYPE === 'ant' ||
+      !isPolicyAllowed('allow_product_feedback')
+    ),
+  load: () => import('./feedback'),
+} satisfies Command
+
+export default feedback
