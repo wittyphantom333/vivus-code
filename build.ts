@@ -87,6 +87,11 @@ const result = await Bun.build({
     // Native addons (CJS require, can't be bundled)
     'modifiers-napi',
     'fflate',
+    // sharp is a native module (libvips bindings, platform-specific .node files).
+    // Wrapped in dynamic import in src/tools/FileReadTool/imageProcessor.ts and
+    // gated behind a fallback path — image features degrade gracefully if the
+    // user's platform lacks a prebuilt binary. Declared in optionalDependencies.
+    'sharp',
   ],
   plugins: [
     {

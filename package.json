@@ -1,6 +1,6 @@
 {
   "name": "vivus-agent",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Vivus — local AI coding agent",
   "type": "module",
   "main": "dist/main.js",
@@ -44,6 +44,9 @@
     "audit": "bun audit",
     "pack:check": "npm pack --dry-run",
     "prepublishOnly": "bun run build.ts && bun audit --prod || true"
+  },
+  "optionalDependencies": {
+    "sharp": "^0.34.0"
   },
   "devDependencies": {
     "@alcalzone/ansi-tokenize": "^0.3.0",
@@ -114,6 +117,7 @@
     "wrap-ansi": "^9.0.0",
     "ws": "^8.18.0",
     "xss": "^1.0.15",
+    "yaml": "^2.9.0",
     "zod": "^3.25.0"
   }
 }
