@@ -19,6 +19,7 @@ import {
 import { isEssentialTrafficOnly } from '../../utils/privacyLevel'
 import { getVivusCodeUserAgent } from '../../utils/userAgent'
 import type { ModelOption } from '../../utils/model/modelOptions'
+import { lookupProxyModelLabel } from '../../utils/model/proxyModelLabels'
 
 const bootstrapResponseSchema = lazySchema(() =>
   z.object({
@@ -166,14 +167,13 @@ async function fetchProxyModelOptions(): Promise<ModelOption[] | null> {
         typeof details.parameter_size === 'string'
           ? details.parameter_size
           : null
-      const descParts: string[] = []
-      if (family) descParts.push(family)
-      if (paramSize) descParts.push(paramSize)
-      const description =
-        descParts.length > 0 ? descParts.join(' · ') : name
+      const { label, description } = lookupProxyModelLabel(name, {
+        family,
+        parameterSize: paramSize,
+      })
       options.push({
         value: name,
-        label: titleCaseModelName(name),
+        label,
         description,
       })
     }

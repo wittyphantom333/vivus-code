@@ -23,11 +23,12 @@ import { getModelStrings, resolveOverriddenModel } from './modelStrings'
 import { formatModelPricing, getOpus46CostTier } from '../modelCost'
 import { getSettings_DEPRECATED } from '../settings/settings'
 import type { PermissionMode } from '../permissions/PermissionMode'
-import { getAPIProvider } from './providers'
+import { getAPIProvider, isFirstPartyAnthropicBaseUrl } from './providers'
 import { LIGHTNING_BOLT } from '../../constants/figures'
 import { isModelAllowed } from './modelAllowlist'
 import { type ModelAlias, isModelAlias } from './aliases'
 import { capitalize } from '../stringUtils'
+import { isProxyModelName, lookupProxyModelLabel } from './proxyModelLabels'
 
 export type ModelShortName = string
 export type ModelName = string
@@ -176,6 +177,18 @@ export function getRuntimeMainLoopModel(params: {
  * @returns The default model setting to use
  */
 export function getDefaultMainLoopModelSetting(): ModelName | ModelAlias {
+  // When pointed at a custom proxy (anything other than api.anthropic.com),
+  // skip Anthropic-tier defaults and use the proxy's preferred model. Override
+  // via VIVUS_DEFAULT_PROXY_MODEL (or ANTHROPIC_MODEL); falls back to
+  // 'minimax-m3:cloud' which is the recommended default on the Vivus proxy.
+  if (!isFirstPartyAnthropicBaseUrl()) {
+    return (
+      process.env.VIVUS_DEFAULT_PROXY_MODEL ||
+      process.env.ANTHROPIC_MODEL ||
+      'minimax-m3:cloud'
+    )
+  }
+
   // Ants default to defaultModel from flag config, or Opus 1M if not configured
   if (process.env.USER_TYPE === 'ant') {
     return (
@@ -393,6 +406,12 @@ function maskModelCodename(baseName: string): string {
 }
 
 export function renderModelName(model: ModelName): string {
+  // Proxy/Ollama-style identifiers (e.g. "minimax-m3:cloud", "qwen3:14b")
+  // get the curated friendly label so the picker and "Default (recommended)"
+  // description never show raw model IDs.
+  if (isProxyModelName(model)) {
+    return lookupProxyModelLabel(model).label
+  }
   const publicName = getPublicModelDisplayName(model)
   if (publicName) {
     return publicName

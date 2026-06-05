@@ -55,6 +55,21 @@ export function getDefaultOptionForUser(fastMode = false): ModelOption {
     }
   }
 
+  // Custom proxy: the tier-specific Sonnet/Opus descriptions are misleading
+  // (the proxy isn't serving those models). Show the resolved default name
+  // via renderDefaultModelSetting, which is curated for proxy IDs.
+  if (!isFirstPartyAnthropicBaseUrl()) {
+    const currentModel = renderDefaultModelSetting(
+      getDefaultMainLoopModelSetting(),
+    )
+    return {
+      value: null,
+      label: 'Default (recommended)',
+      description: `Use the default model (currently ${currentModel})`,
+      descriptionForModel: `Default model (currently ${currentModel})`,
+    }
+  }
+
   // Subscribers
   if (isVivusAISubscriber()) {
     return {
