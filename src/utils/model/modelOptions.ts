@@ -14,7 +14,7 @@ import {
 } from '../modelCost'
 import { getSettings_DEPRECATED } from '../settings/settings'
 import { checkOpus1mAccess, checkSonnet1mAccess } from './check1mAccess'
-import { getAPIProvider } from './providers'
+import { getAPIProvider, isFirstPartyAnthropicBaseUrl } from './providers'
 import { isModelAllowed } from './modelAllowlist'
 import {
   getCanonicalName,
@@ -269,6 +269,18 @@ function getOpusPlanOption(): ModelOption {
 // @[MODEL LAUNCH]: Update the model picker lists below to include/reorder options for the new model.
 // Each user tier (ant, Max/Team Premium, Pro/Team Standard/Enterprise, PAYG 1P, PAYG 3P) has its own list.
 function getModelOptionsBase(fastMode = false): ModelOption[] {
+  // Custom proxy (ANTHROPIC_BASE_URL points away from api.anthropic.com):
+  // skip the hard-coded Sonnet/Opus/Haiku tiers and surface whatever the
+  // proxy advertises via /api/tags (cached by bootstrap.ts).
+  if (!isFirstPartyAnthropicBaseUrl()) {
+    const proxyCache = getGlobalConfig().additionalModelOptionsCache ?? []
+    if (proxyCache.length > 0) {
+      return [getDefaultOptionForUser(fastMode), ...proxyCache]
+    }
+    // Cache not populated yet (first launch, or proxy unreachable) —
+    // fall through to the existing tier-based list so the picker is never empty.
+  }
+
   if (process.env.USER_TYPE === 'ant') {
     // Build options from antModels config
     const antModelOptions: ModelOption[] = getAntModels().map(m => ({

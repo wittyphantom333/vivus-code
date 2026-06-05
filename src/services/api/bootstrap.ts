@@ -12,9 +12,13 @@ import { logForDebugging } from '../../utils/debug'
 import { withOAuth401Retry } from '../../utils/http'
 import { lazySchema } from '../../utils/lazySchema'
 import { logError } from '../../utils/log'
-import { getAPIProvider } from '../../utils/model/providers'
+import {
+  getAPIProvider,
+  isFirstPartyAnthropicBaseUrl,
+} from '../../utils/model/providers'
 import { isEssentialTrafficOnly } from '../../utils/privacyLevel'
 import { getVivusCodeUserAgent } from '../../utils/userAgent'
+import type { ModelOption } from '../../utils/model/modelOptions'
 
 const bootstrapResponseSchema = lazySchema(() =>
   z.object({
@@ -108,22 +112,114 @@ async function fetchBootstrapAPI(): Promise<BootstrapResponse | null> {
   }
 }
 
+// ---------------------------------------------------------------------------
+// Proxy model discovery — when ANTHROPIC_BASE_URL points at a custom proxy
+// that exposes an Ollama-compatible /api/tags endpoint, fetch the live model
+// list so the /model picker mirrors what the proxy actually serves.
+// ---------------------------------------------------------------------------
+
+function titleCaseModelName(name: string): string {
+  const base = name.replace(/:latest$/, '')
+  if (!base) return name
+  // Split on common separators and capitalize each token; preserve digits/case
+  // inside tokens (e.g. "qwen3-coder" → "Qwen3 Coder", "deepseek-r1" → "Deepseek R1").
+  return base
+    .split(/[-_/:]/)
+    .filter(Boolean)
+    .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ')
+}
+
+async function fetchProxyModelOptions(): Promise<ModelOption[] | null> {
+  if (isFirstPartyAnthropicBaseUrl()) return null
+  const baseUrl = process.env.ANTHROPIC_BASE_URL
+  if (!baseUrl) return null
+
+  let tagsUrl: string
+  try {
+    tagsUrl = new URL('/api/tags', baseUrl).toString()
+  } catch {
+    return null
+  }
+
+  try {
+    logForDebugging(`[Bootstrap] Probing proxy model list: ${tagsUrl}`)
+    const response = await axios.get<unknown>(tagsUrl, { timeout: 5000 })
+    const data = response.data as
+      | { models?: Array<Record<string, unknown>> }
+      | undefined
+    const models = Array.isArray(data?.models) ? data!.models : []
+    if (models.length === 0) {
+      logForDebugging('[Bootstrap] Proxy returned empty model list')
+      return []
+    }
+
+    const options: ModelOption[] = []
+    const seen = new Set<string>()
+    for (const m of models) {
+      const name = typeof m.name === 'string' ? m.name : null
+      if (!name || seen.has(name)) continue
+      seen.add(name)
+      const details = (m.details ?? {}) as Record<string, unknown>
+      const family = typeof details.family === 'string' ? details.family : null
+      const paramSize =
+        typeof details.parameter_size === 'string'
+          ? details.parameter_size
+          : null
+      const descParts: string[] = []
+      if (family) descParts.push(family)
+      if (paramSize) descParts.push(paramSize)
+      const description =
+        descParts.length > 0 ? descParts.join(' · ') : name
+      options.push({
+        value: name,
+        label: titleCaseModelName(name),
+        description,
+      })
+    }
+    logForDebugging(
+      `[Bootstrap] Proxy model list: ${options.map(o => o.value).join(', ')}`,
+    )
+    return options
+  } catch (error) {
+    logForDebugging(
+      `[Bootstrap] Proxy /api/tags fetch failed: ${
+        axios.isAxiosError(error) ? (error.response?.status ?? error.code) : 'unknown'
+      }`,
+    )
+    return null
+  }
+}
+
 /**
  * Fetch bootstrap data from the API and persist to disk cache.
  */
 export async function fetchBootstrapData(): Promise<void> {
   try {
-    const response = await fetchBootstrapAPI()
-    if (!response) return
+    const [response, proxyModels] = await Promise.all([
+      fetchBootstrapAPI().catch(() => null),
+      fetchProxyModelOptions(),
+    ])
 
-    const clientData = response.client_data ?? null
-    const additionalModelOptions = response.additional_model_options ?? []
+    if (!response && !proxyModels) return
+
+    const clientData = response?.client_data ?? null
+    // Merge: API-provided extras first, then proxy-discovered models (deduped).
+    const apiOptions = response?.additional_model_options ?? []
+    const merged: ModelOption[] = [...apiOptions]
+    if (proxyModels) {
+      for (const opt of proxyModels) {
+        if (!merged.some(existing => existing.value === opt.value)) {
+          merged.push(opt)
+        }
+      }
+    }
 
     // Only persist if data actually changed — avoids a config write on every startup.
     const config = getGlobalConfig()
     if (
       isEqual(config.clientDataCache, clientData) &&
-      isEqual(config.additionalModelOptionsCache, additionalModelOptions)
+      isEqual(config.additionalModelOptionsCache, merged)
     ) {
       logForDebugging('[Bootstrap] Cache unchanged, skipping write')
       return
@@ -133,7 +229,7 @@ export async function fetchBootstrapData(): Promise<void> {
     saveGlobalConfig(current => ({
       ...current,
       clientDataCache: clientData,
-      additionalModelOptionsCache: additionalModelOptions,
+      additionalModelOptionsCache: merged,
     }))
   } catch (error) {
     logError(error)
