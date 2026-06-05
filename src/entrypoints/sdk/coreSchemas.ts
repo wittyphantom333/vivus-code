@@ -1341,7 +1341,7 @@ export const SDKRateLimitInfoSchema = lazySchema(() =>
       isUsingOverage: z.boolean().optional(),
       surpassedThreshold: z.number().optional(),
     })
-    .describe('Rate limit information for vivus.ai subscription users.'),
+    .describe('Rate limit information for vivus subscription users.'),
 )
 
 export const SDKAssistantMessageSchema = lazySchema(() =>

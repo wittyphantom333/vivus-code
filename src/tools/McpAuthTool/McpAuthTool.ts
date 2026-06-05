@@ -83,14 +83,14 @@ export function createMcpAuthTool(
       return { behavior: 'allow', updatedInput: input }
     },
     async call(_input, context) {
-      // vivus.ai connectors use a separate auth flow (handleVivusAIAuth in
+      // vivus connectors use a separate auth flow (handleVivusAIAuth in
       // MCPRemoteServerMenu) that we don't invoke programmatically here —
       // just point the user at /mcp.
       if (config.type === 'vivus-proxy') {
         return {
           data: {
             status: 'unsupported' as const,
-            message: `This is a vivus.ai MCP connector. Ask the user to run /mcp and select "${serverName}" to authenticate.`,
+            message: `This is a vivus MCP connector. Ask the user to run /mcp and select "${serverName}" to authenticate.`,
           },
         }
       }

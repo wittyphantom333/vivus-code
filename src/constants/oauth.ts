@@ -62,10 +62,10 @@ type OauthConfig = {
   CONSOLE_AUTHORIZE_URL: string
   VIVUS_AI_AUTHORIZE_URL: string
   /**
-   * The vivus.ai web origin. Separate from VIVUS_AI_AUTHORIZE_URL because
-   * that now routes through vivus.ai/cai/* for attribution — deriving
-   * .origin from it would give vivus.ai, breaking links to /code,
-   * /settings/connectors, and other vivus.ai web pages.
+   * The vivus web origin. Separate from VIVUS_AI_AUTHORIZE_URL because
+   * that now routes through github.com/wittyphantom333/vivus-code* for attribution — deriving
+   * .origin from it would give vivus, breaking links to /code,
+   * /settings/connectors, and other vivus web pages.
    */
   VIVUS_AI_ORIGIN: string
   TOKEN_URL: string
@@ -80,67 +80,39 @@ type OauthConfig = {
   MCP_PROXY_PATH: string
 }
 
-// Production OAuth configuration - Used in normal operation
+// Production OAuth configuration. URLs are empty by default — OAuth-based
+// sign-in (`/login`, browser-based auth) is disabled in this distribution.
+// Users authenticate by providing VIVUS_API_KEY (or ANTHROPIC_API_KEY) and
+// pointing VIVUS_PROXY_URL / ANTHROPIC_BASE_URL at their own proxy.
+// To re-enable OAuth, set VIVUS_CODE_CUSTOM_OAUTH_URL to an allowlisted URL.
 const PROD_OAUTH_CONFIG = {
   BASE_API_URL: 'https://api.anthropic.com',
-  CONSOLE_AUTHORIZE_URL: 'https://agent.vivus.ai/oauth/authorize',
-  // Bounces through vivus.ai/cai/* so CLI sign-ins connect to vivus.ai
-  // visits for attribution. 307s to vivus.ai/oauth/authorize in two hops.
-  VIVUS_AI_AUTHORIZE_URL: 'https://agent.vivus.ai/oauth/authorize',
-  VIVUS_AI_ORIGIN: 'https://agent.vivus.ai',
-  TOKEN_URL: 'https://agent.vivus.ai/v1/oauth/token',
-  API_KEY_URL: 'https://agent.vivus.ai/api/oauth/vivus_cli/create_api_key',
-  ROLES_URL: 'https://agent.vivus.ai/api/oauth/vivus_cli/roles',
-  CONSOLE_SUCCESS_URL:
-    'https://agent.vivus.ai/buy_credits?returnUrl=/oauth/code/success%3Fapp%3Dvivus',
-  VIVUSAI_SUCCESS_URL:
-    'https://agent.vivus.ai/oauth/code/success?app=vivus',
-  MANUAL_REDIRECT_URL: 'https://agent.vivus.ai/oauth/code/callback',
-  CLIENT_ID: '9d1c250a-e61b-44d9-88ed-5944d1962f5e',
+  CONSOLE_AUTHORIZE_URL: '',
+  VIVUS_AI_AUTHORIZE_URL: '',
+  VIVUS_AI_ORIGIN: '',
+  TOKEN_URL: '',
+  API_KEY_URL: '',
+  ROLES_URL: '',
+  CONSOLE_SUCCESS_URL: '',
+  VIVUSAI_SUCCESS_URL: '',
+  MANUAL_REDIRECT_URL: '',
+  CLIENT_ID: '',
   // No suffix for production config
   OAUTH_FILE_SUFFIX: '',
-  MCP_PROXY_URL: 'https://mcp-proxy.anthropic.com',
+  MCP_PROXY_URL: '',
   MCP_PROXY_PATH: '/v1/mcp/{server_id}',
 } as const
 
 /**
  * Client ID Metadata Document URL for MCP OAuth (CIMD / SEP-991).
- * When an MCP auth server advertises client_id_metadata_document_supported: true,
- * Vivus uses this URL as its client_id instead of Dynamic Client Registration.
- * The URL must point to a JSON document hosted by Anthropic.
- * See: https://datatracker.ietf.org/doc/html/draft-ietf-oauth-client-id-metadata-document-00
+ * Empty by default — this distribution does not host a CIMD document.
+ * MCP servers that require CIMD will fall back to Dynamic Client Registration.
  */
-export const MCP_CLIENT_METADATA_URL =
-  'https://vivus.ai/oauth/vivus-client-metadata'
+export const MCP_CLIENT_METADATA_URL = ''
 
 // Staging OAuth configuration - only included in ant builds with staging flag
-// Uses literal check for dead code elimination
-const STAGING_OAUTH_CONFIG =
-  process.env.USER_TYPE === 'ant'
-    ? ({
-        BASE_API_URL: 'https://api-staging.anthropic.com',
-        CONSOLE_AUTHORIZE_URL:
-          'https://platform.staging.ant.dev/oauth/authorize',
-        VIVUS_AI_AUTHORIZE_URL:
-          'https://vivus-ai.staging.ant.dev/oauth/authorize',
-        VIVUS_AI_ORIGIN: 'https://vivus-ai.staging.ant.dev',
-        TOKEN_URL: 'https://platform.staging.ant.dev/v1/oauth/token',
-        API_KEY_URL:
-          'https://api-staging.anthropic.com/api/oauth/vivus_cli/create_api_key',
-        ROLES_URL:
-          'https://api-staging.anthropic.com/api/oauth/vivus_cli/roles',
-        CONSOLE_SUCCESS_URL:
-          'https://platform.staging.ant.dev/buy_credits?returnUrl=/oauth/code/success%3Fapp%3Dvivus',
-        VIVUSAI_SUCCESS_URL:
-          'https://platform.staging.ant.dev/oauth/code/success?app=vivus',
-        MANUAL_REDIRECT_URL:
-          'https://platform.staging.ant.dev/oauth/code/callback',
-        CLIENT_ID: '22422756-60c9-4084-8eb7-27705fd5cf9a',
-        OAUTH_FILE_SUFFIX: '-staging-oauth',
-        MCP_PROXY_URL: 'https://mcp-proxy-staging.anthropic.com',
-        MCP_PROXY_PATH: '/v1/mcp/{server_id}',
-      } as const)
-    : undefined
+// No staging OAuth config shipped in this distribution.
+const STAGING_OAUTH_CONFIG = undefined
 
 // Three local dev servers: :8000 api-proxy (`api dev start -g ccr`),
 // :4000 vivus-ai frontend, :3000 Console frontend. Env vars let
@@ -174,13 +146,10 @@ function getLocalOauthConfig(): OauthConfig {
 }
 
 // Allowed base URLs for VIVUS_CODE_CUSTOM_OAUTH_URL override.
-// Only FedStart/PubSec deployments are permitted to prevent OAuth tokens
-// from being sent to arbitrary endpoints.
-const ALLOWED_OAUTH_BASE_URLS = [
-  'https://beacon.vivus-ai.staging.ant.dev',
-  'https://vivus.fedstart.com',
-  'https://vivus-staging.fedstart.com',
-]
+// Empty by default — this distribution does not ship with any allowlisted
+// OAuth providers. To enable a custom OAuth provider, add the base URL here
+// and set the VIVUS_CODE_CUSTOM_OAUTH_URL env var.
+const ALLOWED_OAUTH_BASE_URLS: readonly string[] = []
 
 // Default to prod config, override with test/staging if enabled
 export function getOauthConfig(): OauthConfig {

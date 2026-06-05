@@ -3,7 +3,7 @@ import { homedir } from 'os'
 import { join } from 'path'
 import { isFsInaccessible } from '../errors'
 
-export const CHROME_EXTENSION_URL = 'https://vivus.ai/chrome'
+export const CHROME_EXTENSION_URL = 'https://github.com/wittyphantom333/vivus-code'
 
 // Production extension ID
 const PROD_EXTENSION_ID = 'fcoeoabgfenejglbffodgkkbkcdhcgfn'

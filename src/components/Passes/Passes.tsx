@@ -167,7 +167,7 @@ export function Passes({
         <Box flexDirection="column" marginLeft={2}>
           <Text dimColor>
             {referrerReward ? `Share a free week of Vivus with friends. If they love it and subscribe, you'll get ${formatCreditAmount(referrerReward)} of extra usage to keep building. ` : 'Share a free week of Vivus with friends. '}
-            <Link url={referrerReward ? 'https://support.vivus.ai/en/articles/13456702-vivus-guest-passes' : 'https://support.vivus.ai/en/articles/12875061-vivus-guest-passes'}>
+            <Link url={referrerReward ? 'https://github.com/wittyphantom333/vivus-code' : 'https://github.com/wittyphantom333/vivus-code'}>
               Terms apply.
             </Link>
           </Text>

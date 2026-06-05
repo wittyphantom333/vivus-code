@@ -23,7 +23,7 @@ type TipMatcher = {
   tip: ValidationTip
 }
 
-const DOCUMENTATION_BASE = 'https://code.vivus.ai/docs/en'
+const DOCUMENTATION_BASE = 'https://github.com/wittyphantom333/vivus-code'
 
 const TIP_MATCHERS: TipMatcher[] = [
   {

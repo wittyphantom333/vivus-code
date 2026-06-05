@@ -1,8 +1,8 @@
-export const PRODUCT_URL = 'https://vivus.ai/vivus'
+export const PRODUCT_URL = 'https://github.com/wittyphantom333/vivus-code'
 
 // Vivus Remote session URLs
-export const VIVUS_AI_BASE_URL = 'https://vivus.ai'
-export const VIVUS_AI_STAGING_BASE_URL = 'https://vivus-ai.staging.ant.dev'
+export const VIVUS_AI_BASE_URL = 'https://github.com/wittyphantom333/vivus-code'
+export const VIVUS_AI_STAGING_BASE_URL = ''
 export const VIVUS_AI_LOCAL_BASE_URL = 'http://localhost:4000'
 
 /**
@@ -54,7 +54,7 @@ export function getVivusAiBaseUrl(
  *
  * The cse_→session_ translation is a temporary shim gated by
  * tengu_bridge_repl_v2_cse_shim_enabled (see isCseShimEnabled). Worker
- * endpoints (/v1/code/sessions/{id}/worker/*) want `cse_*` but the vivus.ai
+ * endpoints (/v1/code/sessions/{id}/worker/*) want `cse_*` but the vivus
  * frontend currently routes on `session_*` (compat/convert.go:27 validates
  * TagSession). Same UUID body, different tag prefix. Once the server tags by
  * environment_kind and the frontend accepts `cse_*` directly, flip the gate

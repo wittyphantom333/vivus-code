@@ -50,8 +50,7 @@ jobs:
 
           # Optional: Add vivus_args to customize behavior and configuration
           # See https://github.com/anthropics/vivus-action/blob/main/docs/usage.md
-          # or https://code.vivus.ai/docs/en/cli-reference for available options
-          # vivus_args: '--allowed-tools Bash(gh pr:*)'
+          # or https://github.com/wittyphantom333/vivus-code for available options
 
 `
 
@@ -61,7 +60,7 @@ This PR adds a GitHub Actions workflow that enables Vivus integration in our rep
 
 ### What is Vivus?
 
-[Vivus](https://vivus.ai/vivus) is an AI coding agent that can help with:
+[Vivus](https://github.com/wittyphantom333/vivus-code) is an AI coding agent that can help with:
 - Bug fixes and improvements  
 - Documentation updates
 - Implementing new features
@@ -139,6 +138,6 @@ jobs:
           plugins: 'code-review@vivus-plugins'
           prompt: '/code-review:code-review \${{ github.repository }}/pull/\${{ github.event.pull_request.number }}'
           # See https://github.com/anthropics/vivus-action/blob/main/docs/usage.md
-          # or https://code.vivus.ai/docs/en/cli-reference for available options
+          # or https://github.com/wittyphantom333/vivus-code for available options
 
 `

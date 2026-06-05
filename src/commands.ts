@@ -422,7 +422,7 @@ export function meetsAvailabilityRequirement(cmd: Command): boolean {
         if (isVivusAISubscriber()) return true
         break
       case 'console':
-        // Console API key user = direct 1P API customer (not 3P, not vivus.ai).
+        // Console API key user = direct 1P API customer (not 3P, not vivus).
         // Excludes 3P (Bedrock/Vertex/Foundry) who don't set ANTHROPIC_BASE_URL
         // and gateway users who proxy through a custom base URL.
         if (

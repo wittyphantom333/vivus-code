@@ -6,7 +6,7 @@ import { Box, Link, Newline, Text, useInput } from '../ink';
 import { isChromeExtensionInstalled } from '../utils/vivusInChrome/setup';
 import { saveGlobalConfig } from '../utils/config';
 import { Dialog } from './design-system/Dialog';
-const CHROME_EXTENSION_URL = 'https://vivus.ai/chrome';
+const CHROME_EXTENSION_URL = 'https://github.com/wittyphantom333/vivus-code';
 const CHROME_PERMISSIONS_URL = 'https://clau.de/chrome/permissions';
 type Props = {
   onDone(): void;
@@ -87,7 +87,7 @@ export function VivusInChromeOnboarding(t0) {
   }
   let t9;
   if ($[13] === Symbol.for("react.memo_cache_sentinel")) {
-    t9 = <Text dimColor={true}>For more info, use{" "}{t8}{" "}or visit <Link url="https://code.vivus.ai/docs/en/chrome" /></Text>;
+    t9 = <Text dimColor={true}>For more info, use{" "}{t8}{" "}or visit <Link url="https://github.com/wittyphantom333/vivus-code" /></Text>;
     $[13] = t9;
   } else {
     t9 = $[13];

@@ -396,7 +396,7 @@ export function MCPListPanel(t0) {
   }
   let t23;
   if ($[51] !== vivusAiServers || $[52] !== renderServerItem) {
-    t23 = vivusAiServers.length > 0 && <Box flexDirection="column" marginBottom={1}><Box paddingLeft={2}><Text bold={true}>vivus.ai</Text></Box>{vivusAiServers.map(server_5 => renderServerItem(server_5))}</Box>;
+    t23 = vivusAiServers.length > 0 && <Box flexDirection="column" marginBottom={1}><Box paddingLeft={2}><Text bold={true}>vivus</Text></Box>{vivusAiServers.map(server_5 => renderServerItem(server_5))}</Box>;
     $[51] = vivusAiServers;
     $[52] = renderServerItem;
     $[53] = t23;
@@ -431,7 +431,7 @@ export function MCPListPanel(t0) {
   }
   let t27;
   if ($[62] === Symbol.for("react.memo_cache_sentinel")) {
-    t27 = <Text dimColor={true}><Link url="https://code.vivus.ai/docs/en/mcp">https://code.vivus.ai/docs/en/mcp</Link>{" "}for help</Text>;
+    t27 = <Text dimColor={true}><Link url="https://github.com/wittyphantom333/vivus-code">https://github.com/wittyphantom333/vivus-code</Link>{" "}for help</Text>;
     $[62] = t27;
   } else {
     t27 = $[62];

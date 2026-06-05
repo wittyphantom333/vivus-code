@@ -881,7 +881,7 @@ export const SettingsSchema = lazySchema(() =>
               .string()
               .optional()
               .describe(
-                'Display name for the assistant, shown in the vivus.ai session list',
+                'Display name for the assistant, shown in the vivus session list',
               ),
           }
         : {}),

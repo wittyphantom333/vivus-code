@@ -163,13 +163,13 @@ type LocalJSXCommand = {
  * of the listed auth types. See meetsAvailabilityRequirement() in commands.ts.
  *
  * Example: `availability: ['vivus-ai', 'console']` shows the command to
- * vivus.ai subscribers and direct Console API key users (api.anthropic.com),
+ * vivus subscribers and direct Console API key users (api.anthropic.com),
  * but hides it from Bedrock/Vertex/Foundry users and custom base URL users.
  */
 export type CommandAvailability =
-  // vivus.ai OAuth subscriber (Pro/Max/Team/Enterprise via vivus.ai)
+  // vivus OAuth subscriber (Pro/Max/Team/Enterprise via vivus)
   | 'vivus-ai'
-  // Console API key user (direct api.anthropic.com, not via vivus.ai OAuth)
+  // Console API key user (direct api.anthropic.com, not via vivus OAuth)
   | 'console'
 
 export type CommandBase = {

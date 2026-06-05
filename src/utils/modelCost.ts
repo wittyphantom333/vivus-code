@@ -23,7 +23,7 @@ import {
   type ModelShortName,
 } from './model/model'
 
-// @see https://platform.vivus.ai/docs/en/about-vivus/pricing
+// @see https://github.com/wittyphantom333/vivus-code
 export type ModelCosts = {
   inputTokens: number
   outputTokens: number
@@ -99,7 +99,7 @@ export function getOpus46CostTier(fastMode: boolean): ModelCosts {
 }
 
 // @[MODEL LAUNCH]: Add a pricing entry for the new model below.
-// Costs from https://platform.vivus.ai/docs/en/about-vivus/pricing
+// Costs from https://github.com/wittyphantom333/vivus-code
 // Web search cost: $10 per 1000 requests = $0.01 per request
 export const MODEL_COSTS: Record<ModelShortName, ModelCosts> = {
   [firstPartyNameToCanonical(VIVUS_3_5_HAIKU_CONFIG.firstParty)]:

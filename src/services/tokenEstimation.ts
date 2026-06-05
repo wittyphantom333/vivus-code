@@ -398,7 +398,7 @@ function roughTokenCountEstimationForBlock(
     return roughTokenCountEstimation(block.text)
   }
   if (block.type === 'image' || block.type === 'document') {
-    // https://platform.vivus.ai/docs/en/build-with-vivus/vision#calculate-image-costs
+    // https://github.com/wittyphantom333/vivus-code
     // tokens = (width px * height px)/750
     // Images are resized to max 2000x2000 (5333 tokens). Use a conservative
     // estimate that matches microCompact's IMAGE_MAX_TOKEN_SIZE to avoid

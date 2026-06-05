@@ -23,6 +23,20 @@ async function checkEndpoints(): Promise<PreflightCheckResult> {
   if (process.env.ANTHROPIC_BASE_URL || process.env.VIVUS_CODE_SKIP_PREFLIGHT) {
     return { success: true };
   }
+  // OAuth-based sign-in is disabled in this distribution by default
+  // (PROD_OAUTH_CONFIG.TOKEN_URL is empty). Skip the preflight check
+  // — there's nothing meaningful to ping.
+  try {
+    const probeConfig = getOauthConfig();
+    if (!probeConfig.TOKEN_URL) {
+      return { success: true };
+    }
+  } catch {
+    // getOauthConfig() throws if VIVUS_CODE_CUSTOM_OAUTH_URL is set to a
+    // disallowed value. Skip preflight — the user will see the real error
+    // when they actually try to authenticate.
+    return { success: true };
+  }
   try {
     const oauthConfig = getOauthConfig();
     const tokenUrl = new URL(oauthConfig.TOKEN_URL);
@@ -135,7 +149,7 @@ export function PreflightStep(t0) {
   useEffect(t3, t4);
   let t5;
   if ($[6] !== isChecking || $[7] !== result || $[8] !== showSpinner) {
-    t5 = isChecking && showSpinner ? <Box paddingLeft={1}><Spinner /><Text>Checking connectivity...</Text></Box> : !result?.success && !isChecking && <Box flexDirection="column" gap={1}><Text color="error">Unable to connect to Anthropic services</Text><Text color="error">{result?.error}</Text>{result?.sslHint ? <Box flexDirection="column" gap={1}><Text>{result.sslHint}</Text><Text color="suggestion">See https://code.vivus.ai/docs/en/network-config</Text></Box> : <Box flexDirection="column" gap={1}><Text>Please check your internet connection and network settings.</Text><Text>Note: Vivus might not be available in your country. Check supported countries at{" "}<Text color="suggestion">https://anthropic.com/supported-countries</Text></Text></Box>}</Box>;
+    t5 = isChecking && showSpinner ? <Box paddingLeft={1}><Spinner /><Text>Checking connectivity...</Text></Box> : !result?.success && !isChecking && <Box flexDirection="column" gap={1}><Text color="error">Unable to connect to upstream services</Text><Text color="error">{result?.error}</Text>{result?.sslHint ? <Box flexDirection="column" gap={1}><Text>{result.sslHint}</Text></Box> : <Box flexDirection="column" gap={1}><Text>Please check your internet connection and network settings.</Text></Box>}</Box>;
     $[6] = isChecking;
     $[7] = result;
     $[8] = showSpinner;

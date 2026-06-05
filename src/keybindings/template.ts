@@ -44,7 +44,7 @@ export function generateKeybindingsTemplate(): string {
   // Format as object wrapper with bindings array
   const config = {
     $schema: 'https://www.schemastore.org/vivus-keybindings.json',
-    $docs: 'https://code.vivus.ai/docs/en/keybindings',
+    $docs: 'https://github.com/wittyphantom333/vivus-code',
     bindings,
   }
 

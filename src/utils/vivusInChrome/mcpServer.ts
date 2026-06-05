@@ -21,7 +21,7 @@ import { isEnvTruthy } from '../envUtils'
 import { sideQuery } from '../sideQuery'
 import { getAllSocketPaths, getSecureSocketPath } from './common'
 
-const EXTENSION_DOWNLOAD_URL = 'https://vivus.ai/chrome'
+const EXTENSION_DOWNLOAD_URL = 'https://github.com/wittyphantom333/vivus-code'
 const BUG_REPORT_URL =
   'https://github.com/anthropics/vivus/issues/new?labels=bug,vivus-in-chrome'
 
@@ -109,11 +109,11 @@ export function createChromeContext(
     clientTypeId: 'vivus',
     onAuthenticationError: () => {
       logger.warn(
-        'Authentication error occurred. Please ensure you are logged into the Vivus browser extension with the same vivus.ai account as Vivus.',
+        'Authentication error occurred. Please ensure you are logged into the Vivus browser extension with the same account as Vivus.',
       )
     },
     onToolCallDisconnected: () => {
-      return `Browser extension is not connected. Please ensure the Vivus browser extension is installed and running (${EXTENSION_DOWNLOAD_URL}), and that you are logged into vivus.ai with the same account as Vivus. If this is your first time connecting to Chrome, you may need to restart Chrome for the installation to take effect. If you continue to experience issues, please report a bug: ${BUG_REPORT_URL}`
+      return `Browser extension is not connected. Please ensure the Vivus browser extension is installed and running (${EXTENSION_DOWNLOAD_URL}), and that you are logged in with the same account as Vivus. If this is your first time connecting to Chrome, you may need to restart Chrome for the installation to take effect. If you continue to experience issues, please report a bug: ${BUG_REPORT_URL}`
     },
     onExtensionPaired: (deviceId: string, name: string) => {
       saveGlobalConfig(config => {

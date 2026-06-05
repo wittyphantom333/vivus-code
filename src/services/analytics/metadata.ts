@@ -93,7 +93,7 @@ export function isToolDetailsLoggingEnabled(): boolean {
  *
  * Per go/taxonomy, MCP names are medium PII. We log them for:
  * - Cowork (entrypoint=local-agent) — no ZDR concept, log all MCPs
- * - vivus.ai-proxied connectors — always official (from vivus.ai's list)
+ * - vivus-proxied connectors — always official (from vivus's list)
  * - Servers whose URL matches the official MCP registry — directory
  *   connectors added via `vivus mcp add`, not customer-specific config
  *

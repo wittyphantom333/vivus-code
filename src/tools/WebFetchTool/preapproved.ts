@@ -12,9 +12,8 @@
 // that sandbox network restrictions require explicit user permission rules.
 
 export const PREAPPROVED_HOSTS = new Set([
-  // Anthropic
-  'platform.vivus.ai',
-  'code.vivus.ai',
+  // Vivus / repo
+  'github.com/wittyphantom333/vivus-code',
   'modelcontextprotocol.io',
   'github.com/anthropics',
   'agentskills.io',

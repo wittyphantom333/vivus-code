@@ -52,7 +52,7 @@ export function getMCPUserAgent(): string {
 // User-Agent for WebFetch requests to arbitrary sites. `Vivus-User` is
 // Anthropic's publicly documented agent for user-initiated fetches (what site
 // operators match in robots.txt); the vivus suffix lets them distinguish
-// local CLI traffic from vivus.ai server-side fetches.
+// local CLI traffic from vivus server-side fetches.
 export function getWebFetchUserAgent(): string {
   return `Vivus-User (${getVivusCodeUserAgent()}; +https://support.anthropic.com/)`
 }

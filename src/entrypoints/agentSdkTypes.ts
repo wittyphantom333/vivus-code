@@ -365,7 +365,7 @@ export function buildMissedTaskNotification(_missed: CronTask[]): string {
 }
 
 /**
- * A user message typed on vivus.ai, extracted from the bridge WS.
+ * A user message typed on vivus, extracted from the bridge WS.
  * @internal
  */
 export type InboundPrompt = {
@@ -417,15 +417,15 @@ export type RemoteControlHandle = {
 }
 
 /**
- * Hold a vivus.ai remote-control bridge connection from a daemon process.
+ * Hold a vivus remote-control bridge connection from a daemon process.
  *
  * The daemon owns the WebSocket in the PARENT process — if the agent
  * subprocess (spawned via `query()`) crashes, the daemon respawns it while
- * vivus.ai keeps the same session. Contrast with `query.enableRemoteControl`
+ * vivus keeps the same session. Contrast with `query.enableRemoteControl`
  * which puts the WS in the CHILD process (dies with the agent).
  *
  * Pipe `query()` yields through `write()` + `sendResult()`. Read
- * `inboundPrompts()` (user typed on vivus.ai) into `query()`'s input
+ * `inboundPrompts()` (user typed on vivus) into `query()`'s input
  * stream. Handle `controlRequests()` locally (interrupt → abort, set_model
  * → reconfigure).
  *

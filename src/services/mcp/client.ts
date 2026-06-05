@@ -350,7 +350,7 @@ function handleRemoteAuthFailure(
   const label: Record<typeof transportType, string> = {
     sse: 'SSE',
     http: 'HTTP',
-    'vivus-proxy': 'vivus.ai proxy',
+    'vivus-proxy': 'vivus proxy',
   }
   logMCPDebug(
     name,
@@ -361,12 +361,12 @@ function handleRemoteAuthFailure(
 }
 
 /**
- * Fetch wrapper for vivus.ai proxy connections. Attaches the OAuth bearer
+ * Fetch wrapper for vivus proxy connections. Attaches the OAuth bearer
  * token and retries once on 401 via handleOAuth401Error (force-refresh).
  *
  * The Anthropic API path has this retry (withRetry.ts, grove.ts) to handle
  * memoize-cache staleness and clock drift. Without the same here, a single
- * stale token mass-401s every vivus.ai connector and sticks them all in the
+ * stale token mass-401s every vivus connector and sticks them all in the
  * 15-min needs-auth cache.
  */
 export function createVivusAiProxyFetch(innerFetch: FetchLike): FetchLike {
@@ -375,7 +375,7 @@ export function createVivusAiProxyFetch(innerFetch: FetchLike): FetchLike {
       await checkAndRefreshOAuthTokenIfNeeded()
       const currentTokens = getVivusAIOAuthTokens()
       if (!currentTokens) {
-        throw new Error('No vivus.ai OAuth token available')
+        throw new Error('No vivus OAuth token available')
       }
       // eslint-disable-next-line eslint-plugin-n/no-unsupported-features/node-builtins
       const headers = new Headers(init?.headers)
@@ -868,18 +868,18 @@ export const connectToServer = memoize(
       } else if (serverRef.type === 'vivus-proxy') {
         logMCPDebug(
           name,
-          `Initializing vivus.ai proxy transport for server ${serverRef.id}`,
+          `Initializing vivus proxy transport for server ${serverRef.id}`,
         )
 
         const tokens = getVivusAIOAuthTokens()
         if (!tokens) {
-          throw new Error('No vivus.ai OAuth token found')
+          throw new Error('No vivus OAuth token found')
         }
 
         const oauthConfig = getOauthConfig()
         const proxyUrl = `${oauthConfig.MCP_PROXY_URL}${oauthConfig.MCP_PROXY_PATH.replace('{server_id}', serverRef.id)}`
 
-        logMCPDebug(name, `Using vivus.ai proxy at ${proxyUrl}`)
+        logMCPDebug(name, `Using vivus proxy at ${proxyUrl}`)
 
         // eslint-disable-next-line eslint-plugin-n/no-unsupported-features/node-builtins
         const fetchWithAuth = createVivusAiProxyFetch(globalThis.fetch)
@@ -901,7 +901,7 @@ export const connectToServer = memoize(
           new URL(proxyUrl),
           transportOptions,
         )
-        logMCPDebug(name, `vivus.ai proxy transport created successfully`)
+        logMCPDebug(name, `vivus proxy transport created successfully`)
       } else if (
         (serverRef.type === 'stdio' || !serverRef.type) &&
         isVivusInChromeMCPServer(name)
@@ -1127,7 +1127,7 @@ export const connectToServer = memoize(
         ) {
           logMCPDebug(
             name,
-            `vivus.ai proxy connection failed after ${elapsed}ms: ${error.message}`,
+            `vivus proxy connection failed after ${elapsed}ms: ${error.message}`,
           )
           logMCPError(name, error)
 

@@ -437,7 +437,7 @@ const externalTips: Tip[] = [
   {
     id: 'desktop-app',
     content: async () =>
-      'Run Vivus locally or remotely using the Vivus desktop app: vivus.ai/desktop',
+      'Run Vivus locally or remotely using the Vivus desktop app: github.com/wittyphantom333/vivus-code',
     cooldownSessions: 15,
     isRelevant: async () => getPlatform() !== 'linux',
   },
@@ -459,7 +459,7 @@ const externalTips: Tip[] = [
   {
     id: 'web-app',
     content: async () =>
-      'Run tasks in the cloud while you keep coding locally · vivus.ai/web',
+      'Run tasks in the cloud while you keep coding locally · github.com/wittyphantom333/vivus-code',
     cooldownSessions: 15,
     isRelevant: async () => true,
   },

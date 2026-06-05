@@ -22,7 +22,7 @@ Usage notes:
 \`\`\`
 # VIVUS.md
 
-This file provides guidance to Vivus (vivus.ai/code) when working with code in this repository.
+This file provides guidance to Vivus (github.com/wittyphantom333/vivus-code) when working with code in this repository.
 \`\`\``
 
 const NEW_INIT_PROMPT = `Set up a minimal VIVUS.md (and optionally skills and hooks) for this repo. VIVUS.md is loaded into every Vivus session, so it must be concise — only include what Vivus would get wrong without it.
@@ -125,7 +125,7 @@ Prefix the file with:
 \`\`\`
 # VIVUS.md
 
-This file provides guidance to Vivus (vivus.ai/code) when working with code in this repository.
+This file provides guidance to Vivus (github.com/wittyphantom333/vivus-code) when working with code in this repository.
 \`\`\`
 
 If VIVUS.md already exists: read it, propose specific changes as diffs, and explain why each change improves it. Do not silently overwrite.

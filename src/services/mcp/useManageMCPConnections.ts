@@ -597,7 +597,7 @@ export function useManageMCPConnections(
                     gate.kind === 'disabled'
                       ? 'Channels are not currently available'
                       : gate.kind === 'auth'
-                        ? 'Channels require vivus.ai authentication · run /login'
+                        ? 'Channels require vivus authentication · run /login'
                         : gate.kind === 'policy'
                           ? 'Channels are not enabled for your org · have an administrator set channelsEnabled: true in managed settings'
                           : gate.reason
@@ -766,7 +766,7 @@ export function useManageMCPConnections(
   // Re-runs on session change (/clear) and on /reload-plugins (pluginReconnectKey).
   // On plugin reload, also disconnects stale plugin MCP servers (scope 'dynamic')
   // that no longer appear in configs — prevents ghost tools from disabled plugins.
-  // Skip vivus.ai dedup here to avoid blocking on the network fetch; the connect
+  // Skip vivus dedup here to avoid blocking on the network fetch; the connect
   // useEffect below runs immediately after and dedups before connecting.
   const sessionId = getSessionId()
   useEffect(() => {
@@ -854,12 +854,12 @@ export function useManageMCPConnections(
   ])
 
   // Load MCP configs and connect to servers
-  // Two-phase loading: Vivus configs first (fast), then vivus.ai configs (may be slow)
+  // Two-phase loading: Vivus configs first (fast), then vivus configs (may be slow)
   useEffect(() => {
     let cancelled = false
 
     async function loadAndConnectMcpConfigs() {
-      // Clear vivus.ai MCP cache so we fetch fresh configs with current auth
+      // Clear vivus MCP cache so we fetch fresh configs with current auth
       // state. This is important when authVersion changes (e.g., after login/
       // logout). Kick off the fetch now so it overlaps with loadAllPlugins()
       // inside getVivusCodeMcpConfigs; it's awaited only at the dedup step.
@@ -873,7 +873,7 @@ export function useManageMCPConnections(
       }
 
       // Phase 1: Load Vivus configs. Plugin MCP servers that duplicate a
-      // --mcp-config entry or a vivus.ai connector are suppressed here so they
+      // --mcp-config entry or a vivus connector are suppressed here so they
       // don't connect alongside the connector in Phase 2.
       const { servers: vivusCodeConfigs, errors: mcpErrors } =
         isStrictMcpConfig
@@ -901,7 +901,7 @@ export function useManageMCPConnections(
         )
       })
 
-      // Phase 2: Await vivus.ai configs (started above; memoized — no second fetch)
+      // Phase 2: Await vivus configs (started above; memoized — no second fetch)
       let vivusaiConfigs: Record<string, ScopedMcpServerConfig> = {}
       if (!isStrictMcpConfig) {
         vivusaiConfigs = filterMcpServersByPolicy(
@@ -909,8 +909,8 @@ export function useManageMCPConnections(
         ).allowed
         if (cancelled) return
 
-        // Suppress vivus.ai connectors that duplicate an enabled manual server.
-        // Keys never collide (`slack` vs `vivus.ai Slack`) so the merge below
+        // Suppress vivus connectors that duplicate an enabled manual server.
+        // Keys never collide (`slack` vs `vivus Slack`) so the merge below
         // won't catch this — need content-based dedup by URL signature.
         if (Object.keys(vivusaiConfigs).length > 0) {
           const { servers: dedupedVivusAi } = dedupVivusAiMcpServers(
@@ -921,7 +921,7 @@ export function useManageMCPConnections(
         }
 
         if (Object.keys(vivusaiConfigs).length > 0) {
-          // Add vivus.ai servers as pending immediately so they show up in UI
+          // Add vivus servers as pending immediately so they show up in UI
           setAppState(prevState => {
             const existingServerNames = new Set(
               prevState.mcp.clients.map(c => c.name),
@@ -957,7 +957,7 @@ export function useManageMCPConnections(
           ).catch(error => {
             logMCPError(
               'useManageMcpConnections',
-              `Failed to get vivus.ai MCP resources: ${errorMessage(error)}`,
+              `Failed to get vivus MCP resources: ${errorMessage(error)}`,
             )
           })
         }

@@ -74,7 +74,7 @@ function MemoryCommand({
 
         <Box marginTop={1}>
           <Text dimColor>
-            Learn more: <Link url="https://code.vivus.ai/docs/en/memory" />
+            Learn more: <Link url="https://github.com/wittyphantom333/vivus-code" />
           </Text>
         </Box>
       </Box>

@@ -162,7 +162,7 @@ function getServerUrl(config: McpServerConfig): string | null {
 }
 
 /**
- * CCR proxy URL path markers. In remote sessions, vivus.ai connectors arrive
+ * CCR proxy URL path markers. In remote sessions, vivus connectors arrive
  * via --mcp-config with URLs rewritten to route through the CCR/session-ingress
  * SHTTP proxy. The original vendor URL is preserved in the mcp_url query param
  * so the proxy knows where to forward. See api-go/ccr/internal/ccrshared/
@@ -266,11 +266,11 @@ export function dedupPluginMcpServers(
 }
 
 /**
- * Filter vivus.ai connectors, dropping any whose signature matches an enabled
+ * Filter vivus connectors, dropping any whose signature matches an enabled
  * manually-configured server. Manual wins: a user who wrote .mcp.json or ran
  * `vivus mcp add` expressed higher intent than a connector toggled in the web UI.
  *
- * Connector keys are `vivus.ai <DisplayName>` so they never key-collide with
+ * Connector keys are `vivus <DisplayName>` so they never key-collide with
  * manual servers in the merge — this content-based check catches the case where
  * both point at the same underlying URL (e.g. `mcp__slack__*` and
  * `mcp__vivus_ai_Slack__*` both hitting mcp.slack.com, ~600 chars/turn wasted).
@@ -299,7 +299,7 @@ export function dedupVivusAiMcpServers(
     const manualDup = sig !== null ? manualSigs.get(sig) : undefined
     if (manualDup !== undefined) {
       logForDebugging(
-        `Suppressing vivus.ai connector "${name}": duplicates manually-configured "${manualDup}"`,
+        `Suppressing vivus connector "${name}": duplicates manually-configured "${manualDup}"`,
       )
       suppressed.push({ name, duplicateOf: manualDup })
       continue
@@ -1060,11 +1060,11 @@ export function getMcpConfigByName(name: string): ScopedMcpServerConfig | null {
 }
 
 /**
- * Get Vivus MCP configurations (excludes vivus.ai servers from the
+ * Get Vivus MCP configurations (excludes vivus servers from the
  * returned set — they're fetched separately and merged by callers).
  * This is fast: only local file reads; no awaited network calls on the
  * critical path. The optional extraDedupTargets promise (e.g. the in-flight
- * vivus.ai connector fetch) is awaited only after loadAllPluginsCacheOnly() completes,
+ * vivus connector fetch) is awaited only after loadAllPluginsCacheOnly() completes,
  * so the two overlap rather than serialize.
  * @returns Vivus server configurations with appropriate scopes
  */
@@ -1251,7 +1251,7 @@ export async function getVivusCodeMcpConfigs(
 }
 
 /**
- * Get all MCP configurations across all scopes, including vivus.ai servers.
+ * Get all MCP configurations across all scopes, including vivus servers.
  * This may be slow due to network calls - use getVivusCodeMcpConfigs() for fast startup.
  * @returns All server configurations with appropriate scopes
  */
@@ -1259,12 +1259,12 @@ export async function getAllMcpConfigs(): Promise<{
   servers: Record<string, ScopedMcpServerConfig>
   errors: PluginError[]
 }> {
-  // In enterprise mode, don't load vivus.ai servers (enterprise has exclusive control)
+  // In enterprise mode, don't load vivus servers (enterprise has exclusive control)
   if (doesEnterpriseMcpConfigExist()) {
     return getVivusCodeMcpConfigs()
   }
 
-  // Kick off the vivus.ai fetch before getVivusCodeMcpConfigs so it overlaps
+  // Kick off the vivus fetch before getVivusCodeMcpConfigs so it overlaps
   // with loadAllPluginsCacheOnly() inside. Memoized — the awaited call below is a cache hit.
   const vivusaiPromise = fetchVivusAIMcpConfigsIfEligible()
   const { servers: vivusCodeServers, errors } = await getVivusCodeMcpConfigs(
@@ -1275,15 +1275,15 @@ export async function getAllMcpConfigs(): Promise<{
     await vivusaiPromise,
   )
 
-  // Suppress vivus.ai connectors that duplicate an enabled manual server.
-  // Keys never collide (`slack` vs `vivus.ai Slack`) so the merge below
+  // Suppress vivus connectors that duplicate an enabled manual server.
+  // Keys never collide (`slack` vs `vivus Slack`) so the merge below
   // won't catch this — need content-based dedup by URL signature.
   const { servers: dedupedVivusAi } = dedupVivusAiMcpServers(
     vivusaiMcpServers,
     vivusCodeServers,
   )
 
-  // Merge with vivus.ai having lowest precedence
+  // Merge with vivus having lowest precedence
   const servers = Object.assign({}, dedupedVivusAi, vivusCodeServers)
 
   return { servers, errors }
@@ -1359,7 +1359,7 @@ export function parseMcpConfig(params: {
         ...(filePath && { file: filePath }),
         path: `mcpServers.${name}`,
         message: `Windows requires 'cmd /c' wrapper to execute npx`,
-        suggestion: `Change command to "cmd" with args ["/c", "npx", ...]. See: https://code.vivus.ai/docs/en/mcp#configure-mcp-servers`,
+        suggestion: `Change command to "cmd" with args ["/c", "npx", ...]. See: https://github.com/wittyphantom333/vivus-code`,
         mcpErrorMetadata: {
           scope,
           serverName: name,

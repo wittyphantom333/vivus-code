@@ -1918,12 +1918,12 @@ async function printHelp(): Promise<void> {
 `
     : ''
   const help = `
-Remote Control - Connect your local environment to vivus.ai/code
+Remote Control - Connect your local environment to your Vivus instance
 
 USAGE
   vivus remote-control [options]
 OPTIONS
-  --name <name>                    Name for the session (shown in vivus.ai/code)
+  --name <name>                    Name for the session
 ${
   feature('KAIROS')
     ? `  -c, --continue                   Resume the last session in this directory
@@ -1939,8 +1939,8 @@ ${
 ${serverOptions}
 DESCRIPTION
   Remote Control allows you to control sessions on your local device from
-  vivus.ai/code (https://vivus.ai/code). Run this command in the
-  directory you want to work in, then connect from the Vivus app or web.
+  your configured Vivus backend. Run this command in the
+  directory you want to work in, then connect from your client.
 ${serverDescription}
 NOTES
   - You must be logged in with a Vivus account that has a subscription
@@ -2122,7 +2122,7 @@ export async function bridgeMain(args: string[]): Promise<void> {
     })
     // biome-ignore lint/suspicious/noConsole:: intentional console output
     console.log(
-      '\nRemote Control lets you access this CLI session from the web (vivus.ai/code)\nor the Vivus app, so you can pick up where you left off on any device.\n\nYou can disconnect remote access anytime by running /remote-control again.\n',
+      '\nRemote Control lets you access this CLI session from a remote\nVivus client, so you can pick up where you left off on any device.\n\nYou can disconnect remote access anytime by running /remote-control again.\n',
     )
     const answer = await new Promise<string>(resolve => {
       rl.question('Enable Remote Control? (y/n) ', resolve)
@@ -2252,7 +2252,7 @@ export async function bridgeMain(args: string[]): Promise<void> {
     })
     // biome-ignore lint/suspicious/noConsole: intentional dialog output
     console.log(
-      `\nVivus Remote Control is launching in spawn mode which lets you create new sessions in this project from Vivus on Web or your Mobile app. Learn more here: https://code.vivus.ai/docs/en/remote-control\n\n` +
+      `\nVivus Remote Control is launching in spawn mode which lets you create new sessions in this project from a remote Vivus client. Learn more: https://github.com/wittyphantom333/vivus-code\n\n` +
         `Spawn mode for this project:\n` +
         `  [1] same-dir \u2014 sessions share the current directory (default)\n` +
         `  [2] worktree \u2014 each session gets an isolated git worktree\n\n` +

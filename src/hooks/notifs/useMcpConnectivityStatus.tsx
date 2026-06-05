@@ -43,7 +43,7 @@ export function useMcpConnectivityStatus(t0) {
       if (failedVivusAiClients.length > 0) {
         addNotification({
           key: "mcp-vivusai-failed",
-          jsx: <><Text color="error">{failedVivusAiClients.length} vivus.ai{" "}{failedVivusAiClients.length === 1 ? "connector" : "connectors"}{" "}unavailable</Text><Text dimColor={true}> · /mcp</Text></>,
+          jsx: <><Text color="error">{failedVivusAiClients.length} vivus{" "}{failedVivusAiClients.length === 1 ? "connector" : "connectors"}{" "}unavailable</Text><Text dimColor={true}> · /mcp</Text></>,
           priority: "medium"
         });
       }
@@ -57,7 +57,7 @@ export function useMcpConnectivityStatus(t0) {
       if (needsAuthVivusAiServers.length > 0) {
         addNotification({
           key: "mcp-vivusai-needs-auth",
-          jsx: <><Text color="warning">{needsAuthVivusAiServers.length} vivus.ai{" "}{needsAuthVivusAiServers.length === 1 ? "connector needs" : "connectors need"}{" "}auth</Text><Text dimColor={true}> · /mcp</Text></>,
+          jsx: <><Text color="warning">{needsAuthVivusAiServers.length} vivus{" "}{needsAuthVivusAiServers.length === 1 ? "connector needs" : "connectors need"}{" "}auth</Text><Text dimColor={true}> · /mcp</Text></>,
           priority: "medium"
         });
       }

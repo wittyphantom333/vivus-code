@@ -129,7 +129,7 @@ export async function authLogin({
 
   const settings = getInitialSettings()
   // forceLoginMethod is a hard constraint (enterprise setting) — matches ConsoleOAuthFlow behavior.
-  // Without it, --console selects Console; --vivusai (or no flag) selects vivus.ai.
+  // Without it, --console selects Console; --vivusai (or no flag) selects vivus.
   const loginWithVivusAi = settings.forceLoginMethod
     ? settings.forceLoginMethod === 'vivus'
     : !useConsole
@@ -247,8 +247,8 @@ export async function authStatus(opts: {
   let authMethod: string = 'none'
   if (using3P) {
     authMethod = 'third_party'
-  } else if (authTokenSource === 'vivus.ai') {
-    authMethod = 'vivus.ai'
+  } else if (authTokenSource === 'vivus') {
+    authMethod = 'vivus'
   } else if (authTokenSource === 'apiKeyHelper') {
     authMethod = 'api_key_helper'
   } else if (authTokenSource !== 'none') {
@@ -256,7 +256,7 @@ export async function authStatus(opts: {
   } else if (apiKeySource === 'ANTHROPIC_API_KEY' || hasApiKeyEnvVar) {
     authMethod = 'api_key'
   } else if (apiKeySource === '/login managed key') {
-    authMethod = 'vivus.ai'
+    authMethod = 'vivus'
   }
 
   if (opts.text) {
@@ -306,7 +306,7 @@ export async function authStatus(opts: {
     if (resolvedApiKeySource) {
       output.apiKeySource = resolvedApiKeySource
     }
-    if (authMethod === 'vivus.ai') {
+    if (authMethod === 'vivus') {
       output.email = oauthAccount?.emailAddress ?? null
       output.orgId = oauthAccount?.organizationUuid ?? null
       output.orgName = oauthAccount?.organizationName ?? null

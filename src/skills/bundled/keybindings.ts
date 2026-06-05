@@ -113,7 +113,7 @@ function generateReservedShortcuts(): string {
 
 const FILE_FORMAT_EXAMPLE: KeybindingsSchemaType = {
   $schema: 'https://www.schemastore.org/vivus-keybindings.json',
-  $docs: 'https://code.vivus.ai/docs/en/keybindings',
+  $docs: 'https://github.com/wittyphantom333/vivus-code',
   bindings: [
     {
       context: 'Chat',

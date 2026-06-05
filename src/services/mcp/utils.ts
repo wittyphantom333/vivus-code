@@ -273,7 +273,7 @@ export function describeMcpConfigFilePath(scope: ConfigScope): string {
     case 'enterprise':
       return getEnterpriseMcpFilePath()
     case 'vivus':
-      return 'vivus.ai'
+      return 'vivus'
     default:
       return scope
   }
@@ -292,7 +292,7 @@ export function getScopeLabel(scope: ConfigScope): string {
     case 'enterprise':
       return 'Enterprise config (managed by your organization)'
     case 'vivus':
-      return 'vivus.ai config'
+      return 'vivus config'
     default:
       return scope
   }
@@ -426,7 +426,7 @@ export function getMcpServerScopeFromToolName(
   // Look up server config
   const serverConfig = getMcpConfigByName(mcpInfo.serverName)
 
-  // Fallback: vivus.ai servers have normalized names starting with "vivus_ai_"
+  // Fallback: vivus servers have normalized names starting with "vivus_ai_"
   // but aren't in getMcpConfigByName (they're fetched async separately)
   if (!serverConfig && mcpInfo.serverName.startsWith('vivus_ai_')) {
     return 'vivus'

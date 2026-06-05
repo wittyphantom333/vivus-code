@@ -125,13 +125,13 @@ const bothAuthMethodsNotice: StatusNoticeDefinition = {
         <Box flexDirection="column" marginLeft={3}>
           <Text color="warning">
             · Trying to use{' '}
-            {authTokenInfo.source === 'vivus.ai' ? 'vivus.ai' : authTokenInfo.source}
+            {authTokenInfo.source === 'vivus' ? 'vivus' : authTokenInfo.source}
             ?{' '}
             {apiKeySource === 'ANTHROPIC_API_KEY' ? 'Unset the ANTHROPIC_API_KEY environment variable, or vivus /logout then say "No" to the API key approval before login.' : apiKeySource === 'apiKeyHelper' ? 'Unset the apiKeyHelper setting.' : 'vivus /logout'}
           </Text>
           <Text color="warning">
             · Trying to use {apiKeySource}?{' '}
-            {authTokenInfo.source === 'vivus.ai' ? 'vivus /logout to sign out of vivus.ai.' : `Unset the ${authTokenInfo.source} environment variable.`}
+            {authTokenInfo.source === 'vivus' ? 'vivus /logout to sign out of vivus.' : `Unset the ${authTokenInfo.source} environment variable.`}
           </Text>
         </Box>
       </Box>;
@@ -182,7 +182,7 @@ const jetbrainsPluginNotice: StatusNoticeDefinition = {
         <Text>
           Install the <Text color="ide">{ideName}</Text> plugin from the
           JetBrains Marketplace:{' '}
-          <Text bold>https://docs.vivus.ai/s/vivus-jetbrains</Text>
+          <Text bold>https://github.com/wittyphantom333/vivus-code</Text>
         </Text>
       </Box>;
   }

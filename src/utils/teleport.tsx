@@ -1010,7 +1010,7 @@ export async function teleportToRemote(options: {
       if (!bundle.success) {
         logError(new Error(`Bundle upload failed: ${bundle.error}`));
         // Only steer users to GitHub setup when there's a remote to clone from.
-        const setup = repoInfo ? '. Please setup GitHub on https://vivus.ai/code' : '';
+        const setup = repoInfo ? '. See https://github.com/wittyphantom333/vivus-code for setup.' : '';
         let msg: string;
         switch (bundle.failReason) {
           case 'empty_repo':

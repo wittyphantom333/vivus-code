@@ -102,8 +102,8 @@ export async function runExtraUsage(): Promise<ExtraUsageResult> {
   }
 
   const url = isTeamOrEnterprise
-    ? 'https://vivus.ai/admin-settings/usage'
-    : 'https://vivus.ai/settings/usage'
+    ? 'https://github.com/wittyphantom333/vivus-code'
+    : 'https://github.com/wittyphantom333/vivus-code'
 
   try {
     const opened = await openBrowser(url)

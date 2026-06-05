@@ -80,7 +80,7 @@ export const RemoteTriggerTool = buildTool({
     const accessToken = getVivusAIOAuthTokens()?.accessToken
     if (!accessToken) {
       throw new Error(
-        'Not authenticated with a vivus.ai account. Run /login and try again.',
+        'Not authenticated with a vivus account. Run /login and try again.',
       )
     }
     const orgUUID = await getOrganizationUUID()

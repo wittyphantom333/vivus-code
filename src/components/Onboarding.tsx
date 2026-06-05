@@ -86,7 +86,7 @@ export function Onboarding({
             <Text dimColor wrap="wrap">
               For more details see:
               <Newline />
-              <Link url="https://code.vivus.ai/docs/en/security" />
+              <Link url="https://github.com/wittyphantom333/vivus-code" />
             </Text>
           </OrderedList.Item>
         </OrderedList>

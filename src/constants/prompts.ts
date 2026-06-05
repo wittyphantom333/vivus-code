@@ -100,7 +100,7 @@ import type { OutputStyleConfig } from './outputStyles'
 import { CYBER_RISK_INSTRUCTION } from './cyberRiskInstruction'
 
 export const VIVUS_CODE_DOCS_MAP_URL =
-  'https://code.vivus.ai/docs/en/vivus_code_docs_map.md'
+  'https://github.com/wittyphantom333/vivus-code'
 
 /**
  * Boundary marker separating static (cross-org cacheable) content from dynamic content.
@@ -696,7 +696,7 @@ export async function computeSimpleEnvInfo(
       : `The most recent Vivus model family is Vivus 4.5/4.6. Model IDs — Opus 4.6: '${VIVUS_4_5_OR_4_6_MODEL_IDS.opus}', Sonnet 4.6: '${VIVUS_4_5_OR_4_6_MODEL_IDS.sonnet}', Haiku 4.5: '${VIVUS_4_5_OR_4_6_MODEL_IDS.haiku}'. When building AI applications, default to the latest and most capable Vivus models.`,
     process.env.USER_TYPE === 'ant' && isUndercover()
       ? null
-      : `Vivus is available as a CLI in the terminal, desktop app (Mac/Windows), web app (vivus.ai/code), and IDE extensions (VS Code, JetBrains).`,
+      : `Vivus is available as a CLI in the terminal.`,
     process.env.USER_TYPE === 'ant' && isUndercover()
       ? null
       : `Fast mode for Vivus uses the same ${FRONTIER_MODEL_NAME} model with faster output. It does NOT switch to a different model. It can be toggled with /fast.`,

@@ -100,7 +100,7 @@ export function AssistantTextMessage(t0) {
       {
         let t2;
         if ($[5] === Symbol.for("react.memo_cache_sentinel")) {
-          t2 = <MessageResponse height={1}><Text color="error">Credit balance too low · Add funds: https://platform.vivus.ai/settings/billing</Text></MessageResponse>;
+          t2 = <MessageResponse height={1}><Text color="error">Credit balance too low · Add funds: https://github.com/wittyphantom333/vivus-code</Text></MessageResponse>;
           $[5] = t2;
         } else {
           t2 = $[5];

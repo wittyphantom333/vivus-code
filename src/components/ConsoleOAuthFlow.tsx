@@ -477,21 +477,21 @@ function OAuthStatusMessage(t0) {
         }
         let t5;
         if ($[16] === Symbol.for("react.memo_cache_sentinel")) {
-          t5 = <Text>· Amazon Bedrock:{" "}<Link url="https://code.vivus.ai/docs/en/amazon-bedrock">https://code.vivus.ai/docs/en/amazon-bedrock</Link></Text>;
+          t5 = <Text>· Amazon Bedrock:{" "}<Link url="https://github.com/wittyphantom333/vivus-code">https://github.com/wittyphantom333/vivus-code</Link></Text>;
           $[16] = t5;
         } else {
           t5 = $[16];
         }
         let t6;
         if ($[17] === Symbol.for("react.memo_cache_sentinel")) {
-          t6 = <Text>· Microsoft Foundry:{" "}<Link url="https://code.vivus.ai/docs/en/microsoft-foundry">https://code.vivus.ai/docs/en/microsoft-foundry</Link></Text>;
+          t6 = <Text>· Microsoft Foundry:{" "}<Link url="https://github.com/wittyphantom333/vivus-code">https://github.com/wittyphantom333/vivus-code</Link></Text>;
           $[17] = t6;
         } else {
           t6 = $[17];
         }
         let t7;
         if ($[18] === Symbol.for("react.memo_cache_sentinel")) {
-          t7 = <Box flexDirection="column" marginTop={1}>{t4}{t5}{t6}<Text>· Vertex AI:{" "}<Link url="https://code.vivus.ai/docs/en/google-vertex-ai">https://code.vivus.ai/docs/en/google-vertex-ai</Link></Text></Box>;
+          t7 = <Box flexDirection="column" marginTop={1}>{t4}{t5}{t6}<Text>· Vertex AI:{" "}<Link url="https://github.com/wittyphantom333/vivus-code">https://github.com/wittyphantom333/vivus-code</Link></Text></Box>;
           $[18] = t7;
         } else {
           t7 = $[18];

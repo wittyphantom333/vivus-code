@@ -147,7 +147,7 @@ export function MCPSettings(t0) {
         return;
       }
       if (servers.length === 0 && agentMcpServers.length === 0) {
-        onComplete("No MCP servers configured. Please run /doctor if this is unexpected. Otherwise, run `vivus mcp --help` or visit https://code.vivus.ai/docs/en/mcp to learn more.");
+        onComplete("No MCP servers configured. Please run /doctor if this is unexpected. Otherwise, run `vivus mcp --help` or visit https://github.com/wittyphantom333/vivus-code to learn more.");
       }
     };
     t8 = [servers.length, filteredClients.length, agentMcpServers.length, onComplete];
@@ -207,7 +207,7 @@ export function MCPSettings(t0) {
           t9 = $[25];
         }
         const serverTools_0 = t9;
-        const defaultTab = viewState.server.transport === "vivus-proxy" ? "vivus.ai" : "Vivus";
+        const defaultTab = viewState.server.transport === "vivus-proxy" ? "vivus" : "Vivus";
         if (viewState.server.transport === "stdio") {
           let t10;
           if ($[26] !== viewState.server) {

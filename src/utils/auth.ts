@@ -199,7 +199,7 @@ export function getAuthTokenSource() {
 
   const oauthTokens = getVivusAIOAuthTokens()
   if (shouldUseVivusAIAuth(oauthTokens?.scopes) && oauthTokens?.accessToken) {
-    return { source: 'vivus.ai' as const, hasToken: true }
+    return { source: 'vivus' as const, hasToken: true }
   }
 
   return { source: 'none' as const, hasToken: false }
@@ -1335,7 +1335,7 @@ async function invalidateOAuthCacheIfDiskChanged(): Promise<void> {
   }
 }
 
-// In-flight dedup: when N vivus.ai proxy connectors hit 401 with the same
+// In-flight dedup: when N vivus proxy connectors hit 401 with the same
 // token simultaneously (common at startup — #20930), only one should clear
 // caches and re-read the keychain. Without this, each call's clearOAuthTokenCache()
 // nukes readInFlight in macOsKeychainStorage and triggers a fresh spawn —
@@ -1885,7 +1885,7 @@ export function getAccountInformation() {
 
   // We don't know the organization if we're relying on an external API key or auth token
   if (
-    authTokenSource === 'vivus.ai' ||
+    authTokenSource === 'vivus' ||
     apiKeySource === '/login managed key'
   ) {
     // Get organization name from OAuth account info
@@ -1896,7 +1896,7 @@ export function getAccountInformation() {
   }
   const email = getOauthAccountInfo()?.emailAddress
   if (
-    (authTokenSource === 'vivus.ai' ||
+    (authTokenSource === 'vivus' ||
       apiKeySource === '/login managed key') &&
     email
   ) {

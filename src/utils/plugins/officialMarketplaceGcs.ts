@@ -22,11 +22,10 @@ type SafeString = AnalyticsMetadata_I_VERIFIED_THIS_IS_NOT_CODE_OR_FILEPATHS
 
 // CDN-fronted domain for the public GCS bucket (same bucket the native
 // binary ships from — nativeInstaller/download.ts:24 uses the raw GCS URL).
-// `{sha}.zip` is content-addressed so CDN can cache it indefinitely;
-// `latest` has Cache-Control: max-age=300 so CDN staleness is bounded.
-// Backend (anthropic#317037) populates this prefix.
-const GCS_BASE =
-  'https://downloads.vivus.ai/vivus-releases/plugins/vivus-plugins-official'
+// Plugin marketplace fetch URL. Empty by default — this distribution does
+// not ship with a plugin marketplace. To enable, set this to a base URL
+// hosting `{sha}.zip` plugin bundles.
+const GCS_BASE = ''
 
 // Zip arc paths are seed-dir-relative (marketplaces/vivus-plugins-official/…)
 // so the titanium seed machinery can use the same zip. Strip this prefix when
@@ -158,7 +157,7 @@ export async function fetchOfficialMarketplaceFromGcs(
     // values below are static enums or a git SHA — not code/filepaths/PII.
     logEvent('tengu_plugin_remote_fetch', {
       source: 'marketplace_gcs' as SafeString,
-      host: 'downloads.vivus.ai' as SafeString,
+      host: '' as SafeString,
       is_official: true,
       outcome: outcome as SafeString,
       duration_ms: Math.round(performance.now() - start),

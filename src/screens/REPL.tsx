@@ -2301,7 +2301,7 @@ export function REPL({
 
       // When the REPL bridge is connected, also forward the sandbox
       // permission request as a can_use_tool control_request so the
-      // remote user (e.g. on vivus.ai) can approve it too.
+      // remote user (e.g. on vivus) can approve it too.
       if (feature('BRIDGE_MODE')) {
         const bridgeCallbacks = store.getState().replBridgePermissionCallbacks;
         if (bridgeCallbacks) {
@@ -3869,7 +3869,7 @@ export function REPL({
   useLogMessages(messages, messages.length === initialMessages?.length);
 
   // REPL Bridge: replicate user/assistant messages to the bridge session
-  // for remote access via vivus.ai. No-op in external builds or when not enabled.
+  // for remote access via vivus. No-op in external builds or when not enabled.
   const {
     sendBridgeResult
   } = useReplBridge(messages, setMessages, abortControllerRef, commands, mainLoopModel);

@@ -11,7 +11,7 @@ import { isChromeExtensionInstalled } from '../../utils/vivusInChrome/setup';
 import { getGlobalConfig, saveGlobalConfig } from '../../utils/config';
 import { env } from '../../utils/env';
 import { isRunningOnHomespace } from '../../utils/envUtils';
-const CHROME_EXTENSION_URL = 'https://vivus.ai/chrome';
+const CHROME_EXTENSION_URL = 'https://github.com/wittyphantom333/vivus-code';
 const CHROME_PERMISSIONS_URL = 'https://clau.de/chrome/permissions';
 const CHROME_RECONNECT_URL = 'https://clau.de/chrome/reconnect';
 type MenuAction = 'install-extension' | 'reconnect' | 'manage-permissions' | 'toggle-default';
@@ -212,7 +212,7 @@ function VivusInChromeMenu(t0) {
   }
   let t8;
   if ($[23] !== isVivusAISubscriber) {
-    t8 = true && !isVivusAISubscriber && <Text color="error">Vivus in Chrome requires a vivus.ai subscription.</Text>;
+    t8 = true && !isVivusAISubscriber && <Text color="error">Vivus in Chrome requires a vivus subscription.</Text>;
     $[23] = isVivusAISubscriber;
     $[24] = t8;
   } else {
@@ -234,7 +234,7 @@ function VivusInChromeMenu(t0) {
   }
   let t10;
   if ($[33] === Symbol.for("react.memo_cache_sentinel")) {
-    t10 = <Text dimColor={true}>Learn more: https://code.vivus.ai/docs/en/chrome</Text>;
+    t10 = <Text dimColor={true}>Learn more: https://github.com/wittyphantom333/vivus-code</Text>;
     $[33] = t10;
   } else {
     t10 = $[33];

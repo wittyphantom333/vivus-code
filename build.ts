@@ -44,8 +44,8 @@ const result = await Bun.build({
   define: {
     'MACRO.VERSION': JSON.stringify(VIVUS_VERSION),
     'MACRO.BUILD_TIME': JSON.stringify(new Date().toISOString()),
-    'MACRO.FEEDBACK_CHANNEL': JSON.stringify('https://github.com/vivus-ai/vivus/issues'),
-    'MACRO.ISSUES_EXPLAINER': JSON.stringify('file an issue at https://github.com/vivus-ai/vivus/issues'),
+    'MACRO.FEEDBACK_CHANNEL': JSON.stringify('https://github.com/wittyphantom333/vivus-code/issues'),
+    'MACRO.ISSUES_EXPLAINER': JSON.stringify('file an issue at https://github.com/wittyphantom333/vivus-code/issues'),
     'MACRO.NATIVE_PACKAGE_URL': JSON.stringify(''),
     'MACRO.PACKAGE_URL': JSON.stringify(''),
     'MACRO.VERSION_CHANGELOG': JSON.stringify(''),

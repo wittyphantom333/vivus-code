@@ -150,13 +150,13 @@ function SetModelAndClose({
 
       // @[MODEL LAUNCH]: Update check for 1M access.
       if (model && isOpus1mUnavailable(model)) {
-        onDone(`Opus 4.6 with 1M context is not available for your account. Learn more: https://code.vivus.ai/docs/en/model-config#extended-context-with-1m`, {
+        onDone(`Opus 4.6 with 1M context is not available for your account. Learn more: https://github.com/wittyphantom333/vivus-code`, {
           display: 'system'
         });
         return;
       }
       if (model && isSonnet1mUnavailable(model)) {
-        onDone(`Sonnet 4.6 with 1M context is not available for your account. Learn more: https://code.vivus.ai/docs/en/model-config#extended-context-with-1m`, {
+        onDone(`Sonnet 4.6 with 1M context is not available for your account. Learn more: https://github.com/wittyphantom333/vivus-code`, {
           display: 'system'
         });
         return;

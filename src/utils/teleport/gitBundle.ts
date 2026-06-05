@@ -140,7 +140,7 @@ async function _bundleWithFallback(
   return {
     ok: false,
     error:
-      'Repo is too large to bundle. Please setup GitHub on https://vivus.ai/code',
+      'Repo is too large to bundle. See https://github.com/wittyphantom333/vivus-code for setup.',
     failReason: 'too_large',
   }
 }

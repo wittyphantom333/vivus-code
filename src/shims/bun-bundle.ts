@@ -39,7 +39,7 @@ const FEATURES: Record<string, boolean> = {
   PROACTIVE: false,
   BUDDY: false,                  // Tamagotchi — fun but not priority
   VOICE_MODE: false,             // Needs audio stack
-  BRIDGE_MODE: false,            // Needs vivus.ai integration
+  BRIDGE_MODE: false,            // Needs vivus integration
   DIRECT_CONNECT: false,
   SSH_REMOTE: false,
   BG_SESSIONS: false,

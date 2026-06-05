@@ -15,8 +15,8 @@ import type {
 } from '../loadAgentsDir'
 
 const VIVUS_CODE_DOCS_MAP_URL =
-  'https://code.vivus.ai/docs/en/vivus_code_docs_map.md'
-const CDP_DOCS_MAP_URL = 'https://platform.vivus.ai/llms.txt'
+  'https://github.com/wittyphantom333/vivus-code'
+const CDP_DOCS_MAP_URL = 'https://github.com/wittyphantom333/vivus-code'
 
 export const VIVUS_CODE_GUIDE_AGENT_TYPE = 'vivus-guide'
 

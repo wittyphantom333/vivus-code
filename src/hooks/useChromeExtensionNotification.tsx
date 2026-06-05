@@ -24,7 +24,7 @@ async function _temp() {
   if (true && !isVivusAISubscriber()) {
     return {
       key: "chrome-requires-subscription",
-      jsx: <Text color="error">Vivus in Chrome requires a vivus.ai subscription</Text>,
+      jsx: <Text color="error">Vivus in Chrome requires a vivus subscription</Text>,
       priority: "immediate",
       timeoutMs: 5000
     };
@@ -33,7 +33,7 @@ async function _temp() {
   if (!installed && !isRunningOnHomespace()) {
     return {
       key: "chrome-extension-not-detected",
-      jsx: <Text color="warning">Chrome extension not detected · https://vivus.ai/chrome to install</Text>,
+      jsx: <Text color="warning">Chrome extension not detected · https://github.com/wittyphantom333/vivus-code to install</Text>,
       priority: "immediate",
       timeoutMs: 3000
     };

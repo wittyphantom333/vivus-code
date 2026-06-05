@@ -62,7 +62,7 @@ export const fetchVivusAIMcpConfigsIfEligible = memoize(
       // In non-interactive mode, isVivusAISubscriber() returns false when ANTHROPIC_API_KEY
       // is set (even with valid OAuth tokens) because preferThirdPartyAuthentication() causes
       // isAnthropicAuthEnabled() to return false. Checking the scope directly allows users
-      // with both API keys and OAuth tokens to access vivus.ai MCPs in print mode.
+      // with both API keys and OAuth tokens to access vivus MCPs in print mode.
       if (!tokens.scopes?.includes('user:mcp_servers')) {
         logForDebugging(
           `[vivusai-mcp] Missing user:mcp_servers scope (scopes=${tokens.scopes?.join(',') || 'none'})`,
@@ -97,7 +97,7 @@ export const fetchVivusAIMcpConfigsIfEligible = memoize(
       const usedNormalizedNames = new Set<string>()
 
       for (const server of response.data.data) {
-        const baseName = `vivus.ai ${server.display_name}`
+        const baseName = `vivus ${server.display_name}`
 
         // Try without suffix first, then increment until we find an unused normalized name
         let finalName = baseName
@@ -144,7 +144,7 @@ export function clearVivusAIMcpConfigsCache(): void {
 }
 
 /**
- * Record that a vivus.ai connector successfully connected. Idempotent.
+ * Record that a vivus connector successfully connected. Idempotent.
  *
  * Gates the "N connectors unavailable/need auth" startup notifications: a
  * connector that was working yesterday and is now failed is a state change

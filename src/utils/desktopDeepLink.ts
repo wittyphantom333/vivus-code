@@ -216,7 +216,7 @@ export async function openCurrentSessionInDesktop(): Promise<{
     return {
       success: false,
       error:
-        'Vivus Desktop is not installed. Install it from https://vivus.ai/download',
+        'Vivus Desktop is not installed. See https://github.com/wittyphantom333/vivus-code for setup.',
     }
   }
 
