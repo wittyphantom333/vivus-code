@@ -115,7 +115,11 @@ export function LogoV2() {
   useEffect(t2, t3);
   let t4;
   if ($[5] === Symbol.for("react.memo_cache_sentinel")) {
-    t4 = !hasReleaseNotes && !showOnboarding && !isEnvTruthy(process.env.VIVUS_CODE_FORCE_FULL_LOGO);
+    // Vivus default: always render the full boxed welcome layout (welcome
+    // text, recent activity, what's new). Condensed mode is opt-in via
+    // VIVUS_CODE_CONDENSED_LOGO=1. Legacy VIVUS_CODE_FORCE_FULL_LOGO is still
+    // honored as a hard override that disables condensed mode.
+    t4 = isEnvTruthy(process.env.VIVUS_CODE_CONDENSED_LOGO) && !isEnvTruthy(process.env.VIVUS_CODE_FORCE_FULL_LOGO);
     $[5] = t4;
   } else {
     t4 = $[5];
@@ -176,7 +180,7 @@ export function LogoV2() {
     t10 = $[14];
   }
   const modelDisplayName = t10;
-  if (!hasReleaseNotes && !showOnboarding && !isEnvTruthy(process.env.VIVUS_CODE_FORCE_FULL_LOGO)) {
+  if (isCondensedMode) {
     let t11;
     let t12;
     let t13;
