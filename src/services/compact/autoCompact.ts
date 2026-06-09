@@ -71,7 +71,14 @@ export const MANUAL_COMPACT_BUFFER_TOKENS = 3_000
 // noticeably degrade on multi-tool reasoning past ~60-70% utilization. We now
 // take whichever threshold fires *first* (i.e. is lower) between the buffer-
 // based limit and this percentage cap.
-const DEFAULT_AUTOCOMPACT_RATIO = 0.7
+//
+// 2026-06-09: bumped from 0.70 → 0.85. The 0.70 cap was firing well before
+// users felt context pressure (e.g. ~170K on minimax-m3's 262K advertised
+// window), and the recent open-weight models tolerate higher utilization
+// than the original qwen/glm/deepseek-v3 baseline. 0.85 still leaves a
+// 15% headroom cushion before the 13K-buffer fallback kicks in. Override
+// per-session with VIVUS_AUTOCOMPACT_RATIO.
+const DEFAULT_AUTOCOMPACT_RATIO = 0.85
 
 // Stop trying autocompact after this many consecutive failures.
 // BQ 2026-03-10: 1,279 sessions had 50+ consecutive failures (up to 3,272)
