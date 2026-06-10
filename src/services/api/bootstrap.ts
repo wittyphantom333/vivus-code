@@ -152,7 +152,12 @@ async function fetchProxyModelOptions(): Promise<ModelOption[] | null> {
   const fetchFromV1Models = async (): Promise<DiscoveredModel[] | null> => {
     let url: string
     try {
-      url = new URL('/v1/models', baseUrl).toString()
+      // `?refresh=1` tells our translation proxy to bypass its 5-minute
+      // model-list cache and re-pull /api/tags from Ollama. Without this,
+      // freshly-pulled Ollama models don't appear in the picker until the
+      // proxy's next 5-min refresh tick — even after restarting the CLI.
+      // Unknown query params are harmless on OpenAI-compatible servers.
+      url = new URL('/v1/models?refresh=1', baseUrl).toString()
     } catch {
       return null
     }
