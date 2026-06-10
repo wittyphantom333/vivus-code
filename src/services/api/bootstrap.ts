@@ -115,8 +115,9 @@ async function fetchBootstrapAPI(): Promise<BootstrapResponse | null> {
 
 // ---------------------------------------------------------------------------
 // Proxy model discovery — when ANTHROPIC_BASE_URL points at a custom proxy
-// that exposes an Ollama-compatible /api/tags endpoint, fetch the live model
-// list so the /model picker mirrors what the proxy actually serves.
+// (our translation proxy at `/v1/models`, or a raw Ollama host at
+// `/api/tags`), fetch the live model list so the /model picker mirrors what
+// the proxy actually serves.
 // ---------------------------------------------------------------------------
 
 function titleCaseModelName(name: string): string {
@@ -136,59 +137,121 @@ async function fetchProxyModelOptions(): Promise<ModelOption[] | null> {
   const baseUrl = process.env.ANTHROPIC_BASE_URL
   if (!baseUrl) return null
 
-  let tagsUrl: string
-  try {
-    tagsUrl = new URL('/api/tags', baseUrl).toString()
-  } catch {
-    return null
+  // Try `/v1/models` first — this is what our translation proxy exposes
+  // (OpenAI-compatible list with `data: [{ id, display_name, size_gb, ... }]`).
+  // Fall back to Ollama's native `/api/tags` (`{ models: [{ name, details }] }`)
+  // for cases where ANTHROPIC_BASE_URL points directly at a raw Ollama host.
+  // Without the `/v1/models` path, hitting `proxy.vivus.ai/api/tags` returns
+  // 404 and the picker falls back to the hardcoded Anthropic model list.
+  type DiscoveredModel = {
+    name: string
+    family?: string | null
+    parameterSize?: string | null
   }
 
-  try {
-    logForDebugging(`[Bootstrap] Probing proxy model list: ${tagsUrl}`)
-    const response = await axios.get<unknown>(tagsUrl, { timeout: 5000 })
-    const data = response.data as
-      | { models?: Array<Record<string, unknown>> }
-      | undefined
-    const models = Array.isArray(data?.models) ? data!.models : []
-    if (models.length === 0) {
-      logForDebugging('[Bootstrap] Proxy returned empty model list')
-      return []
+  const fetchFromV1Models = async (): Promise<DiscoveredModel[] | null> => {
+    let url: string
+    try {
+      url = new URL('/v1/models', baseUrl).toString()
+    } catch {
+      return null
     }
-
-    const options: ModelOption[] = []
-    const seen = new Set<string>()
-    for (const m of models) {
-      const name = typeof m.name === 'string' ? m.name : null
-      if (!name || seen.has(name)) continue
-      seen.add(name)
-      const details = (m.details ?? {}) as Record<string, unknown>
-      const family = typeof details.family === 'string' ? details.family : null
-      const paramSize =
-        typeof details.parameter_size === 'string'
-          ? details.parameter_size
-          : null
-      const { label, description } = lookupProxyModelLabel(name, {
-        family,
-        parameterSize: paramSize,
-      })
-      options.push({
-        value: name,
-        label,
-        description,
-      })
+    try {
+      logForDebugging(`[Bootstrap] Probing proxy model list: ${url}`)
+      const response = await axios.get<unknown>(url, { timeout: 5000 })
+      const data = response.data as
+        | { data?: Array<Record<string, unknown>> }
+        | undefined
+      const raw = Array.isArray(data?.data) ? data!.data : null
+      if (!raw) return null
+      return raw
+        .map(m => {
+          const id = typeof m.id === 'string' ? m.id : null
+          if (!id) return null
+          return { name: id } as DiscoveredModel
+        })
+        .filter((m): m is DiscoveredModel => m !== null)
+    } catch (error) {
+      logForDebugging(
+        `[Bootstrap] Proxy /v1/models fetch failed: ${
+          axios.isAxiosError(error)
+            ? (error.response?.status ?? error.code)
+            : 'unknown'
+        }`,
+      )
+      return null
     }
-    logForDebugging(
-      `[Bootstrap] Proxy model list: ${options.map(o => o.value).join(', ')}`,
-    )
-    return options
-  } catch (error) {
-    logForDebugging(
-      `[Bootstrap] Proxy /api/tags fetch failed: ${
-        axios.isAxiosError(error) ? (error.response?.status ?? error.code) : 'unknown'
-      }`,
-    )
-    return null
   }
+
+  const fetchFromApiTags = async (): Promise<DiscoveredModel[] | null> => {
+    let url: string
+    try {
+      url = new URL('/api/tags', baseUrl).toString()
+    } catch {
+      return null
+    }
+    try {
+      logForDebugging(`[Bootstrap] Probing proxy model list: ${url}`)
+      const response = await axios.get<unknown>(url, { timeout: 5000 })
+      const data = response.data as
+        | { models?: Array<Record<string, unknown>> }
+        | undefined
+      const raw = Array.isArray(data?.models) ? data!.models : null
+      if (!raw) return null
+      return raw
+        .map(m => {
+          const name = typeof m.name === 'string' ? m.name : null
+          if (!name) return null
+          const details = (m.details ?? {}) as Record<string, unknown>
+          return {
+            name,
+            family: typeof details.family === 'string' ? details.family : null,
+            parameterSize:
+              typeof details.parameter_size === 'string'
+                ? details.parameter_size
+                : null,
+          } as DiscoveredModel
+        })
+        .filter((m): m is DiscoveredModel => m !== null)
+    } catch (error) {
+      logForDebugging(
+        `[Bootstrap] Proxy /api/tags fetch failed: ${
+          axios.isAxiosError(error)
+            ? (error.response?.status ?? error.code)
+            : 'unknown'
+        }`,
+      )
+      return null
+    }
+  }
+
+  const models =
+    (await fetchFromV1Models()) ?? (await fetchFromApiTags()) ?? []
+
+  if (models.length === 0) {
+    logForDebugging('[Bootstrap] Proxy returned empty model list')
+    return []
+  }
+
+  const options: ModelOption[] = []
+  const seen = new Set<string>()
+  for (const m of models) {
+    if (seen.has(m.name)) continue
+    seen.add(m.name)
+    const { label, description } = lookupProxyModelLabel(m.name, {
+      family: m.family ?? null,
+      parameterSize: m.parameterSize ?? null,
+    })
+    options.push({
+      value: m.name,
+      label,
+      description,
+    })
+  }
+  logForDebugging(
+    `[Bootstrap] Proxy model list: ${options.map(o => o.value).join(', ')}`,
+  )
+  return options
 }
 
 /**
